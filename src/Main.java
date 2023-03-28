@@ -35,14 +35,14 @@ public class Main {
             String[] urlImage = imageUrlFromApi.split("_");
             String finalUrlImage = urlImage[0]+"jpg";
 
-            InputStream inputStream = new URL(urlImage[0]).openStream();
+            InputStream inputStream = new URL(finalUrlImage).openStream();
 
             //Definindo nome do arquivo final
             String nomeArquivo = "Top " + count + " - " + filme.get("title").replace(":", " -") + (".jpg");
 
             //Criando sticker com frase personalizada
             StickerGen sticker = new StickerGen();
-            sticker.criar(inputStream, nomeArquivo, "Filme bão!");
+            sticker.criar(inputStream, nomeArquivo, "[Qualquer frase]");
 
             System.out.println(filme.get("title") + " baixado!");
 
