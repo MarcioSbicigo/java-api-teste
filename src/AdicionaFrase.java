@@ -4,11 +4,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 
-public class StickerGen {
-    void criar(InputStream inputStream, String nomeArquivo, String frase) throws Exception {
-
-        // leitura da imagem
-        //InputStream inputStream = new URL(url).openStream(); //Acessa a URL passada e retorna os bytes dela (imagem).
+public class AdicionaFrase {
+    void criar(String frase, InputStream inputStream, String nomeArquivo, String diretorio) throws Exception {
 
         BufferedImage imagemOriginal = ImageIO.read(inputStream);
 
@@ -24,7 +21,7 @@ public class StickerGen {
         graphics.drawImage(imagemOriginal, 0, 0, null);
 
         //configurar a fonte
-        Font fonte = new Font(Font.SANS_SERIF, Font.BOLD, 96);
+        Font fonte = new Font(Font.SANS_SERIF, Font.BOLD, 64);
         graphics.setColor(Color.YELLOW);
         graphics.setFont((fonte));
 
@@ -32,6 +29,9 @@ public class StickerGen {
         graphics.drawString(frase, 0, novaAltura-100);
 
         // escrever a nova imagem em um arquivo
-        ImageIO.write(novaImagem, "png", new File("img/" + nomeArquivo));
+        File diretorioImagem = new File(diretorio + "/" + nomeArquivo);
+        diretorioImagem.getParentFile().mkdirs();
+
+        ImageIO.write(novaImagem, "png", diretorioImagem);
     }
 }

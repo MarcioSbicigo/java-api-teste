@@ -1,53 +1,53 @@
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        // estabelecendo uma conexão http para obter os dados da api
-        String url = "https://raw.githubusercontent.com/lukadev08/lukadev08.github.io/main/apidata/imdbmostpopularmovies.json";
+        // Url's das api's utilizadas
+        String urlNasa = "https://api.nasa.gov/planetary/apod?api_key=gWdT8Psr4ATuPwRFsEulvkdvWqK9hGm7o6Uq1DoL&start_date=2023-01-01&end_date=2023-01-10";
+        String urlIMDB = "https://raw.githubusercontent.com/lukadev08/lukadev08.github.io/main/apidata/imdbtop250moviesdata.json";
 
-        URI apiUrl = URI.create(url);
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest httpRequest = HttpRequest.newBuilder(apiUrl).GET().build();
-        HttpResponse<String> response = httpClient.send(httpRequest, BodyHandlers.ofString());
+        // Criando o cliente HTTP e fazendo a chamada do método buscaDados(), que retorna o body.
+        // Após chamar o método, armazena os jsons em uma string
+        ClienteHttp ClienteHttp = new ClienteHttp();
 
-        String body = response.body();
+        String jsonNasa = ClienteHttp.buscaDados(urlNasa);
+        String jsonIMDB = ClienteHttp.buscaDados(urlIMDB);
 
-        // extraindo somente os dados que interessam para o app (titulo, poster, classificação)
-        JsonParser jsonParser = new JsonParser();
-        List<Map<String, String>> listaDeFilmes = jsonParser.parse(body);
+        // Criando os extratores para cada json
+        ExtratorConteudo extratorNasa = new ExtratorConteudoNasa();
+        ExtratorConteudo extratorIMDB = new ExtratorConteudoIMDB();
 
-        // baixa as 10 primeiras capas de filmes
-        int count = 1;
+        // Armazenando os dados em Lists
+        List<Conteudo> conteudosNasa = extratorNasa.extraiConteudos(jsonNasa);
+        List<Conteudo> conteudosIMDB = extratorIMDB.extraiConteudos(jsonIMDB);
 
-        for (Map<String, String> filme : listaDeFilmes) {
+        // Manipulando e exibindo os dados obtidos
+        for (int i = 1; i <= 10; i++) {
 
-            //Obtendo url da imagem e tratando para mudar a resulução final
-            String imageUrlFromApi = filme.get("image");
-            String[] urlImage = imageUrlFromApi.split("_");
-            String finalUrlImage = urlImage[0]+"jpg";
+            Conteudo conteudoNasa = conteudosNasa.get(i-1);
+            Conteudo conteudoIMDB = conteudosIMDB.get(i-1);
 
-            InputStream inputStream = new URL(finalUrlImage).openStream();
+            InputStream inputStreamNasa = new URL(conteudoNasa.getUrlImagem()).openStream();
+            InputStream inputStreamIMDB = new URL(conteudoIMDB.getUrlImagem()).openStream();
 
-            //Definindo nome do arquivo final
-            String nomeArquivo = "Top " + count + " - " + filme.get("title").replace(":", " -") + (".jpg");
+            // definindo nome do arquivo final
+            String nomeArquivoNasa = conteudoNasa.getTitulo().replace(":", " -").replace("\\", "") + ".jpg";
+            String nomeArquivoIMDB = "Top " + i + " - " + conteudoIMDB.getTitulo().replace(":", " -") + (".jpg");
 
-            //Criando sticker com frase personalizada
-            StickerGen sticker = new StickerGen();
-            sticker.criar(inputStream, nomeArquivo, "[Qualquer frase]");
+            // Adicionando uma frase personalizada abaixo da imagem
+            AdicionaFrase stickerNasa = new AdicionaFrase();
+            stickerNasa.criar("[Qualquer frase]", inputStreamNasa, nomeArquivoNasa, "saida/api-nasa");
 
-            System.out.println(filme.get("title") + " baixado!");
+            AdicionaFrase stickerIMDB = new AdicionaFrase();
+            stickerIMDB.criar("[Qualquer frase]", inputStreamIMDB, nomeArquivoIMDB, "saida/api-imdb");
 
-            count ++;
-            if(count > 10) break;
+            System.out.println(conteudoNasa.getTitulo() + " baixado!");
+            System.out.println(conteudoIMDB.getTitulo() + " baixado!");
+
         }
 
     }

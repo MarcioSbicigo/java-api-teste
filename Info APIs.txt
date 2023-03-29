@@ -1,0 +1,32 @@
+TMDB API key:
+c0b451a0994459bcc2b0106cc2c91e30
+
+IMDB API key:
+k_auwcx3e5
+
+API Links:
+
+Current popular movies TMDB
+https://api.themoviedb.org/3/movie/popular?api_key=c0b451a0994459bcc2b0106cc2c91e30&language=en-US&page=1
+
+Current popular movies IMDB
+https://imdb-api.com/en/API/MostPopularMovies/k_auwcx3e5
+
+API Picture of the day Nasa:
+https://api.nasa.gov/planetary/apod?api_key=gWdT8Psr4ATuPwRFsEulvkdvWqK9hGm7o6Uq1DoL&start_date=2023-01-01&end_date=2023-01-10
+
+Optional links
+https://raw.githubusercontent.com/lukadev08/lukadev08.github.io/main/apidata/imdbtop250moviesdata.json
+https://raw.githubusercontent.com/lukadev08/lukadev08.github.io/main/apidata/imdbmostpopularmovies.json
+https://raw.githubusercontent.com/lukadev08/lukadev08.github.io/main/apidata/imdbTop250TVs.json
+
+Regex json IMDB:
+IMDB Top 250 Movies API
+.*\[(.+)\].*
+
+Regex json IMDB:
+TMDB
+.*ts\":\[(.+)\].*
+
+API key Nasa:
+gWdT8Psr4ATuPwRFsEulvkdvWqK9hGm7o6Uq1DoL
